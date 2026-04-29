@@ -1,0 +1,27 @@
+name: copy-vc-runtime
+description: Copy dependent VC++ runtime DLLs
+
+inputs:
+  bindir:
+    description: The target directory from which dependencies will be scanned and runtime DLLs will be copied.
+    required: true
+  exts:
+    description: File extensions to scan for dependencies
+    required: false
+    default: |
+      .exe
+      .dll
+  extradirs:
+    description: Additional directories from which dependencies will be scanned
+    required: false
+    default: ""
+
+runs:
+  using: "composite"
+  steps:
+    - shell: pwsh
+      run: |
+        & "$env:GITHUB_ACTION_PATH/copy-vc-runtime.ps1" `
+            -BinDir "${{ inputs.bindir }}" `
+            -Exts "${{ inputs.exts }}" `
+            -ExtraDirs "${{ inputs.extradirs }}"
