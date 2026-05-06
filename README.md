@@ -33,6 +33,7 @@ Make sure to initialize MSVC before running this action:
     exts:
 
     # Additional directories from which dependencies will be scanned.
+    # Accepts comma or newline separated values.
     # Optional.
     extradirs:
 ```

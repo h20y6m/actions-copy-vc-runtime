@@ -6,29 +6,31 @@ on:
       - main
     paths-ignore:
       - '**.md'
+  schedule:
+    - cron: '41 2 * * 6'
+  workflow_dispatch:
+
 jobs:
   test:
-    name: Test
-
-    strategy:
-      matrix:
-        include:
-          - runs-on: windows-latest
-            arch: 'x64'
-          - runs-on: windows-latest
-            arch: 'x86'
-          - runs-on: windows-11-arm
-            arch: 'arm64'
-
-      fail-fast: false
-
+    name: Test ${{ matrix.arch }}
     runs-on: ${{ matrix.runs-on }}
 
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - arch: 'x64'
+            runs-on: windows-latest
+          - arch: 'x86'
+            runs-on: windows-latest
+          - arch: 'arm64'
+            runs-on: windows-11-arm
+
     steps:
-      - name: Checkout repository
+      - name: Check out repository
         uses: actions/checkout@v6
 
-      - name: Setup MSVC
+      - name: Set up MSVC
         uses: h20y6m/actions-setup-msvc-env@v2
         with:
             arch: ${{ matrix.arch }}
@@ -42,7 +44,14 @@ jobs:
         with:
             bindir: tests
 
-      - name: Check
-        shell: pwsh
+      - name: Check the copied DLLs
         working-directory: tests
-        run: Get-ChildItem
+        shell: pwsh
+        run: |
+          $dlls = Get-ChildItem -Filter "*.dll"
+          if (-not $dlls) {
+            throw "No DLLs were found."
+          }
+          else {
+            $dlls
+          }
