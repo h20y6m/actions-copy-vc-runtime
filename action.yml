@@ -15,6 +15,10 @@ inputs:
     description: Additional directories from which dependencies will be scanned
     required: false
     default: ""
+  onecore:
+    description: onecore
+    required: false
+    default: "false"
 
 runs:
   using: "composite"
@@ -24,4 +28,5 @@ runs:
         & "$env:GITHUB_ACTION_PATH/copy-vc-runtime.ps1" `
             -BinDir "${{ inputs.bindir }}" `
             -Exts "${{ inputs.exts }}" `
-            -ExtraDirs "${{ inputs.extradirs }}"
+            -ExtraDirs "${{ inputs.extradirs }}" `
+            -OneCore "${{ inputs.onecore }}"

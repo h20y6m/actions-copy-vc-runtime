@@ -7,7 +7,7 @@ on:
     paths-ignore:
       - '**.md'
   schedule:
-    - cron: '41 2 * * 6'
+    - cron: '41 16 * * 5'
   workflow_dispatch:
 
 jobs:

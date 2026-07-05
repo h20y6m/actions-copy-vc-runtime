@@ -3,10 +3,14 @@ param(
     [string]$BinDir,
 
     [object]$Exts = @(".exe", ".dll"),
-    [object]$ExtraDirs
+    [object]$ExtraDirs,
+
+    [object]$OneCore = $false
 )
 
 $ErrorActionPreference = "Stop"
+
+$OneCore = [System.Convert]::ToBoolean($OneCore)
 
 # Ensure we are running inside a properly initialized MSVC environment.
 if (-not $env:VCToolsRedistDir -or -not $env:VSCMD_ARG_TGT_ARCH) {
@@ -51,7 +55,11 @@ function Get-Dependencies {
 
 # --- Main execution ---
 
-$runtimeDir = Join-Path $env:VCToolsRedistDir $env:VSCMD_ARG_TGT_ARCH
+if ($OneCore) {
+    $runtimeDir = Join-Path $env:VCToolsRedistDir "onecore" $env:VSCMD_ARG_TGT_ARCH
+} else {
+    $runtimeDir = Join-Path $env:VCToolsRedistDir $env:VSCMD_ARG_TGT_ARCH
+}
 
 Write-Host "Searching for VC++ runtime DLLs in $runtimeDir"
 
